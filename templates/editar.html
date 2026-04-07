@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Editar Leitura {{ leitura.id }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body>
+    <header class="container">
+      <h1>Editar Leitura #{{ leitura.id }}</h1>
+      <nav>
+        <a href="{{ url_for('index') }}">Inicio</a>
+        <a href="{{ url_for('historico_leituras') }}">Historico</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <form id="editar-form" data-id="{{ leitura.id }}">
+          <label for="temperatura">Temperatura (C)</label>
+          <input id="temperatura" name="temperatura" type="number" step="0.01" value="{{ leitura.temperatura }}" required />
+
+          <label for="umidade">Umidade (%)</label>
+          <input id="umidade" name="umidade" type="number" step="0.01" value="{{ leitura.umidade }}" required />
+
+          <label for="pressao">Pressao (hPa)</label>
+          <input id="pressao" name="pressao" type="number" step="0.01" value="{{ leitura.pressao }}" required />
+
+          <div class="actions">
+            <button class="btn" type="submit">Salvar</button>
+            <a class="btn secondary" href="{{ url_for('historico_leituras') }}">Cancelar</a>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>

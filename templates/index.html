@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estacao Meteorologica - Inicio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body>
+    <header class="container">
+      <h1>Estacao Meteorologica IoT</h1>
+      <nav>
+        <a href="{{ url_for('index') }}">Inicio</a>
+        <a href="{{ url_for('historico_leituras') }}">Historico</a>
+        <a href="{{ url_for('estatisticas') }}">Estatisticas</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>Variacao Temporal (Chart.js)</h2>
+        <canvas id="leiturasChart" height="120"></canvas>
+      </section>
+
+      <section class="card">
+        <h2>Ultimas 10 Leituras</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Temperatura (C)</th>
+              <th>Umidade (%)</th>
+              <th>Pressao (hPa)</th>
+              <th>Data/Hora</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for leitura in leituras %}
+            <tr>
+              <td>{{ leitura.id }}</td>
+              <td>{{ leitura.temperatura }}</td>
+              <td>{{ leitura.umidade }}</td>
+              <td>{{ leitura.pressao }}</td>
+              <td>{{ leitura.data_hora }}</td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="5">Nenhuma leitura registrada.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script id="leituras-data" type="application/json">{{ leituras_json | safe }}</script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Historico de Leituras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body>
+    <header class="container">
+      <h1>Historico de Leituras</h1>
+      <nav>
+        <a href="{{ url_for('index') }}">Inicio</a>
+        <a href="{{ url_for('historico_leituras') }}">Historico</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Temperatura (C)</th>
+              <th>Umidade (%)</th>
+              <th>Pressao (hPa)</th>
+              <th>Data/Hora</th>
+              <th>Acoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for leitura in leituras %}
+            <tr>
+              <td>{{ leitura.id }}</td>
+              <td>{{ leitura.temperatura }}</td>
+              <td>{{ leitura.umidade }}</td>
+              <td>{{ leitura.pressao }}</td>
+              <td>{{ leitura.data_hora }}</td>
+              <td>
+                <a class="btn" href="{{ url_for('detalhe_leitura', leitura_id=leitura.id) }}">Editar</a>
+                <button class="btn danger delete-btn" data-id="{{ leitura.id }}">Excluir</button>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6">Nenhuma leitura registrada.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,117 @@
+:root {
+  --bg: #f4f8fb;
+  --surface: #ffffff;
+  --text: #1f2d3d;
+  --muted: #5f7186;
+  --primary: #0f766e;
+  --danger: #c53030;
+  --border: #d6e1ea;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, #eef6ff 0%, var(--bg) 100%);
+}
+
+.container {
+  width: min(1000px, 92%);
+  margin: 0 auto;
+}
+
+header {
+  padding: 24px 0 8px;
+}
+
+nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 8px;
+  text-align: left;
+}
+
+th {
+  background: #f1f7f9;
+}
+
+label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 0.92rem;
+}
+
+.btn.secondary {
+  background: #64748b;
+}
+
+.btn.danger {
+  background: var(--danger);
+}
+
+@media (max-width: 700px) {
+  table {
+    font-size: 0.86rem;
+  }
+
+  .card {
+    padding: 12px;
+  }
+}
