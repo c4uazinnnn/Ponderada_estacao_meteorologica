@@ -12,17 +12,32 @@
       <nav>
         <a href="{{ url_for('index') }}">Inicio</a>
         <a href="{{ url_for('historico_leituras') }}">Historico</a>
-        <a href="{{ url_for('estatisticas') }}">Estatisticas</a>
       </nav>
     </header>
 
     <main class="container">
       <section class="card">
         <h2>Variacao Temporal (Chart.js)</h2>
-        <canvas id="leiturasChart" height="120"></canvas>
+        <div class="charts-grid">
+          <div class="chart-item">
+            <h3>Temperatura</h3>
+            <canvas id="temperaturaChart"></canvas>
+          </div>
+          <div class="chart-item">
+            <h3>Umidade</h3>
+            <canvas id="umidadeChart"></canvas>
+          </div>
+          <div class="chart-item">
+            <h3>Pressao</h3>
+            <canvas id="pressaoChart"></canvas>
+          </div>
+        </div>
       </section>
 
       <section class="card">
+        <div class="actions">
+          <button class="btn" type="button" id="refresh-home">Atualizar leituras</button>
+        </div>
         <h2>Ultimas 10 Leituras</h2>
         <table>
           <thead>

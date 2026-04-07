@@ -1,8 +1,10 @@
 function initChart() {
-  const canvas = document.getElementById("leiturasChart");
+  const temperaturaCanvas = document.getElementById("temperaturaChart");
+  const umidadeCanvas = document.getElementById("umidadeChart");
+  const pressaoCanvas = document.getElementById("pressaoChart");
   const scriptData = document.getElementById("leituras-data");
 
-  if (!canvas || !scriptData || typeof Chart === "undefined") {
+  if (!temperaturaCanvas || !umidadeCanvas || !pressaoCanvas || !scriptData || typeof Chart === "undefined") {
     return;
   }
 
@@ -15,10 +17,92 @@ function initChart() {
   }
 
   const labels = leituras.map((item) => item.data_hora);
-  const temperaturas = leituras.map((item) => item.temperatura);
-  const umidades = leituras.map((item) => item.umidade);
+  const temperaturas = leituras.map((item) => Number(item.temperatura));
+  const umidades = leituras.map((item) => Number(item.umidade));
+  const pressoes = leituras.map((item) => Number(item.pressao));
 
-  new Chart(canvas, {
+  function calcularEscalaReal(valores) {
+    const numeros = valores.map((v) => Number(v)).filter((v) => Number.isFinite(v));
+    if (!numeros.length) {
+      return {};
+    }
+
+    let min = Math.min(...numeros);
+    let max = Math.max(...numeros);
+
+    if (min === max) {
+      const margem = Math.max(Math.abs(min) * 0.1, 1);
+      min -= margem;
+      max += margem;
+    }
+
+    const range = max - min;
+    const alvoTicks = 6;
+    const passoBruto = range / alvoTicks;
+    const magnitude = Math.pow(10, Math.floor(Math.log10(passoBruto)));
+    const normalizado = passoBruto / magnitude;
+
+    let fator;
+    if (normalizado <= 1) {
+      fator = 1;
+    } else if (normalizado <= 2) {
+      fator = 2;
+    } else if (normalizado <= 5) {
+      fator = 5;
+    } else {
+      fator = 10;
+    }
+
+    const stepSize = fator * magnitude;
+    const yMin = Math.floor(min / stepSize) * stepSize;
+    const yMax = Math.ceil(max / stepSize) * stepSize;
+
+    return {
+      min: yMin,
+      max: yMax,
+      ticks: {
+        stepSize,
+        padding: 8,
+      },
+    };
+  }
+
+  function criarOpcoes(yScale) {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          top: 8,
+          right: 8,
+          bottom: 4,
+          left: 8,
+        },
+      },
+      plugins: {
+        legend: {
+          position: "top",
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 5,
+            maxRotation: 0,
+            padding: 8,
+          },
+        },
+        y: yScale,
+      },
+    };
+  }
+
+  const escalaTemperatura = calcularEscalaReal(temperaturas);
+  const escalaUmidade = calcularEscalaReal(umidades);
+  const escalaPressao = calcularEscalaReal(pressoes);
+
+  new Chart(temperaturaCanvas, {
     type: "line",
     data: {
       labels,
@@ -30,6 +114,16 @@ function initChart() {
           backgroundColor: "rgba(231, 111, 81, 0.2)",
           tension: 0.25,
         },
+      ],
+    },
+    options: criarOpcoes(escalaTemperatura),
+  });
+
+  new Chart(umidadeCanvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
         {
           label: "Umidade (%)",
           data: umidades,
@@ -39,15 +133,24 @@ function initChart() {
         },
       ],
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: {
-          position: "top",
+    options: criarOpcoes(escalaUmidade),
+  });
+
+  new Chart(pressaoCanvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Pressao (hPa)",
+          data: pressoes,
+          borderColor: "#264653",
+          backgroundColor: "rgba(38, 70, 83, 0.2)",
+          tension: 0.25,
         },
-      },
+      ],
     },
+    options: criarOpcoes(escalaPressao),
   });
 }
 
@@ -81,6 +184,17 @@ function initDeleteButtons() {
         alert("Nao foi possivel excluir a leitura.");
       }
     });
+  });
+}
+
+function initRefreshButton() {
+  const refreshButton = document.getElementById("refresh-history") || document.getElementById("refresh-home");
+  if (!refreshButton) {
+    return;
+  }
+
+  refreshButton.addEventListener("click", () => {
+    window.location.reload();
   });
 }
 
@@ -126,6 +240,7 @@ function initEditForm() {
 
 document.addEventListener("DOMContentLoaded", () => {
   initChart();
+  initRefreshButton();
   initDeleteButtons();
   initEditForm();
 });

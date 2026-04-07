@@ -7,7 +7,6 @@ from flask import Flask, Response, jsonify, render_template, request
 from database import (
     buscar_leitura,
     deletar_leitura,
-    get_db_connection,
     init_db,
     inserir_leitura,
     listar_leituras,
@@ -115,93 +114,23 @@ def remover_leitura(leitura_id: int) -> Response:
 
     if wants_json():
         return jsonify({"mensagem": "Leitura removida", "id": leitura_id})
-        html = f"""
-        <!doctype html>
-        <html lang=\"pt-BR\">
-            <head>
-                <meta charset=\"utf-8\" />
-                <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-                <title>Leitura removida</title>
-            </head>
-            <body>
-                <h1>Leitura removida</h1>
-                <p>Leitura {leitura_id} removida com sucesso.</p>
-                <p><a href=\"/leituras\">Voltar para historico</a></p>
-            </body>
-        </html>
-        """
-        return Response(html, mimetype="text/html")
 
-
-@app.route("/api/estatisticas", methods=["GET"])
-def estatisticas() -> Response | str:
-    with get_db_connection() as conn:
-        row = conn.execute(
-            """
-            SELECT
-                COUNT(*) AS total,
-                AVG(temperatura) AS temperatura_media,
-                MIN(temperatura) AS temperatura_min,
-                MAX(temperatura) AS temperatura_max,
-                AVG(umidade) AS umidade_media,
-                MIN(umidade) AS umidade_min,
-                MAX(umidade) AS umidade_max,
-                AVG(pressao) AS pressao_media,
-                MIN(pressao) AS pressao_min,
-                MAX(pressao) AS pressao_max
-            FROM leituras
-            """
-        ).fetchone()
-
-    stats = {
-        "total": row["total"],
-        "temperatura": {
-            "media": row["temperatura_media"],
-            "min": row["temperatura_min"],
-            "max": row["temperatura_max"],
-        },
-        "umidade": {
-            "media": row["umidade_media"],
-            "min": row["umidade_min"],
-            "max": row["umidade_max"],
-        },
-        "pressao": {
-            "media": row["pressao_media"],
-            "min": row["pressao_min"],
-            "max": row["pressao_max"],
-        },
-    }
-
-    if wants_json():
-        return jsonify(stats)
-        html = f"""
-        <!doctype html>
-        <html lang=\"pt-BR\">
-            <head>
-                <meta charset=\"utf-8\" />
-                <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-                <title>Estatisticas</title>
-            </head>
-            <body>
-                <h1>Estatisticas</h1>
-                <p><a href=\"/\">Inicio</a> | <a href=\"/leituras\">Historico</a></p>
-                <p><strong>Total:</strong> {stats['total']}</p>
-                <h2>Temperatura</h2>
-                <p>Media: {stats['temperatura']['media']}</p>
-                <p>Min: {stats['temperatura']['min']}</p>
-                <p>Max: {stats['temperatura']['max']}</p>
-                <h2>Umidade</h2>
-                <p>Media: {stats['umidade']['media']}</p>
-                <p>Min: {stats['umidade']['min']}</p>
-                <p>Max: {stats['umidade']['max']}</p>
-                <h2>Pressao</h2>
-                <p>Media: {stats['pressao']['media']}</p>
-                <p>Min: {stats['pressao']['min']}</p>
-                <p>Max: {stats['pressao']['max']}</p>
-            </body>
-        </html>
-        """
-        return Response(html, mimetype="text/html")
+    html = f"""
+    <!doctype html>
+    <html lang=\"pt-BR\">
+      <head>
+        <meta charset=\"utf-8\" />
+        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+        <title>Leitura removida</title>
+      </head>
+      <body>
+        <h1>Leitura removida</h1>
+        <p>Leitura {leitura_id} removida com sucesso.</p>
+        <p><a href=\"/leituras\">Voltar para historico</a></p>
+      </body>
+    </html>
+    """
+    return Response(html, mimetype="text/html")
 
 
 if __name__ == "__main__":
